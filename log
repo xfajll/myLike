@@ -1,0 +1,60 @@
+import logging
+
+
+def log_status(msg, logger=None, method_level=40):
+    """
+
+    :param msg: logger message
+    :param logger:
+    :param method_level:
+    :return: None
+
+    >> msg: "Initializing keypart excel to get keypart..."
+    """
+
+    method_dict = {10: "debug",
+                   20: "info",
+                   30: "warn",
+                   40: "error",
+                   50: "critical"}
+    if logger:
+        getattr(logger, method_dict[method_level])(msg)
+
+
+class Log:
+
+    def __init__(self, name="RF"):
+        self.name = name
+
+    def get_log_frame(self):
+
+        fmt = "%(asctime)-15s %(name)s : %(message)s"
+        datefmt = "%Y-%m-%d %H:%M:%S"
+        frame_log = logging.Formatter(fmt, datefmt)
+        return frame_log
+
+    def get_log_handler(self, formatter, path=None, level=logging.INFO):
+        log_path = path if path else 'log.log'
+        fh = logging.FileHandler(log_path, mode='w', encoding='utf-8')
+        fh.setLevel(level)
+        fh.setFormatter(formatter)
+        return fh
+
+    def get_logger(self, name=None):
+        name = self.name if name is None else name
+
+        frame_log = self.get_log_frame()
+        handler = self.get_log_handler(frame_log)
+
+        logger = logging.getLogger(name)
+        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
+
+        return logger
+
+
+if __name__ == "__main__":
+    log = Log()
+    logger = log.get_logger()
+    log_status("123", logger)
+    ...
